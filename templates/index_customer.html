@@ -1,0 +1,32 @@
+<html lang="en">
+    <head>
+        <title>BharatReads - Customer Dashboard</title>
+        <link rel="stylesheet" href="../static/style2.css">
+    </head>
+  
+    <body bgcolor="#ffffff">
+        <div class="one">
+            <div class="two">
+                <h1><a href="{{url_for('index_customer',customer = customer)}}">{{customer['name']}}</a></h1>
+                <ul>
+                    
+                    <li><a href="#">Browse old books</a></li>
+                    <li><a href="#">Browse new books</a></li>
+                    <li><a href="#">My Rentals</a></li>
+                    <li><a href="#">My Purchases</a></li>
+                    <li><a href="#">My Profile</a></li>
+                    <li><a href="{{url_for('logout')}}">Log out</a></li>
+                </ul> 
+            </div>
+            <div class="content" align="center">
+                <div class="topbar">
+                    <h2> BharatReads - Customer Dashboard</h2>                        
+                </div></br></br>
+                <div class="contentbar">
+                     <div class="msg">{{ msg }}</div>
+                </div>  
+                  
+            </div>
+        </div>
+    </body>
+</html>

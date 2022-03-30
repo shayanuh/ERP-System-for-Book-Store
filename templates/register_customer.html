@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>BharatReads - Register Customer</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+	</head>
+	<style>
+		body {
+		  background-image: url("../static/books.jpg");
+		  background-repeat: no-repeat;
+		  background-attachment: fixed;  
+		  background-size: cover;
+		}
+	</style>
+	<body>
+		<div class="login">
+			<h1>BharatReads - Register as a Customer</h1>
+			<div class="links">
+				<a href="{{ url_for('login_customer') }}" >Login as a Customer</a>
+				<a href="{{url_for('register_customer')}}" class="active">Register as a Customer</a>
+                <a href="{{url_for('login_staff')}}" >Login as a Staff</a>
+			</div>
+			<form action="{{ url_for('register_customer') }}" method="post" autocomplete="off">
+				<label for="username">
+					<i class="fas fa-user"></i>
+				</label>
+				<input type="text" name="username" placeholder="Username" id="username" required>
+				<label for="password">
+					<i class="fas fa-lock"></i>
+				</label>
+				<input type="password" name="password" placeholder="Password" id="password" required>
+				<label for="name">
+					<i class="fas fa-user"></i>
+				</label>
+				<input type="text" name="name" placeholder="Name" id="name" required>
+                <label for="contact_no">
+					<i class="fas fa-envelope"></i>
+				</label>
+				<input type="text" name="contact_no" placeholder="Contact No." id="contact_no" >
+				<div class="msg">{{ msg }}</div>
+				<input type="submit" value="Register">
+			</form>
+		</div>
+	</body>
+</html>
