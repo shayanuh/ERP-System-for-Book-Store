@@ -1,0 +1,92 @@
+<html lang="en">
+    <head>
+        <title>BharatReads - Customer Dashboard</title>
+        <link rel="stylesheet" href="../static/style2.css">
+        </head>
+  
+    <body bgcolor="#ffffff">
+        <div class="one">
+            <div class="two">
+                <h1><a href="{{url_for('index_customer')}}">{{customer['name']}}</a></h1>
+                <ul>
+                    
+                    <li><a href="{{url_for('browse_old_books')}}">Browse old books</a></li>
+                    <li class =active><a href="{{url_for('browse_new_books')}}">Browse new books</a></li>
+                    <li><a href="{{url_for('customer_rentals')}}">My Rentals</a></li>
+                    <li><a href="#">My Purchases</a></li>
+                    <li><a href="#">My Sales</a></li>
+                    <li><a href="{{url_for('customer_profile')}}">My Profile</a></li>
+                    <li><a href="{{url_for('logout')}}">Log out</a></li>
+                </ul> 
+            </div>
+            <div class="content" align="center">
+                <div class="topbar">
+                    <h2> BharatReads - Customer Dashboard</h2>                        
+                </div></br></br>
+                <div class="contentbar">
+                    <form action="{{ url_for('browse_new_books') }}" method="post" autocomplete="off">
+                        <input type="text" name="title" placeholder="Title" id="title" class ='textbox'>
+                        <input type="text" name="author" placeholder="Author" id="author" class ='textbox'>
+                        <select name="status" placeholder="Status" id="status" required class ='textbox'>
+                            <option value="" disabled selected hidden>Status</option>
+                            <option value="AVAILABLE">Available</option>
+                            <option value="SOLD">Sold</option>
+                            <option value="All">All</option>
+                        </select>
+                        <select name="genre" placeholder="Genre" id="genre" required class ='textbox'>
+                            <option value="" disabled selected hidden>Genre</option>
+                            <option value="Fiction">Fiction</option>
+                            <option value="Non Fiction">Non Fiction</option>
+                            <option value="Educational">Educational</option>
+                            <option value="Mystery/Suspense">Mystery/Suspense</option>
+                            <option value="Horror">Horror</option>
+                            <option value="Historical">Historical</option>
+                            <option value="Mythological">Mythological</option>
+                            <option value="Kids">Kids</option>
+                            <option value="Journal">Journal</option>
+                            <option value="Romance">Romance</option>
+                            <option value="Thriller">Thriller</option>
+                            <option value="All">All</option>
+                            <option value="Other">Other</option>
+                        </select>   
+                        
+                        <input type="number" name="edition" placeholder="Edition" id="edition" class ='textbox' ></br></br>
+                        <input type="number" name="book_id" placeholder="Book ID" id="book_id" class ='textbox'>
+                        </br></br>
+                        <input type="submit" value="Search for new books" class="btn">
+                    </form>  
+                </br></br>
+                <div class="msg">{{ msg }}</div> </br></br>
+                {% if newbooks  %}
+                <div>
+                    <table class ='simple-table'>
+                        <tr>
+                          <th>New Book Id</th>
+                          <th>Title</th>
+                          <th>Author</th>
+                          <th>Genre</th>
+                          <th>Edition</th>
+                          <th>Status</th>
+                          <th>Sale Price</th>
+                        </tr>
+                        {%for newbook in newbooks%}
+                        <tr>
+                          <td>{{newbook['id']}}</td>
+                          <td>{{newbook['title']}}</td>
+                          <td>{{newbook['author']}}</td>
+                          <td>{{newbook['genre']}}</td>
+                          <td>{{newbook['edition']}}</td>
+                          <td>{{newbook['status']}}</td>
+                          <td>{{newbook['sale_price']}}</td>
+                        </tr>
+                        {% endfor %}
+                      </table>
+                </div>
+                {% endif %}
+                </div>  
+                  
+            </div>
+        </div>
+       
+    </body>
+</html>

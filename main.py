@@ -119,9 +119,8 @@ def add_new_book():
     if 'loggedin' in session:
         staff = session['user']
         msg = ''
-        if request.method == 'POST' and 'title' in request.form and 'stock' in request.form and 'author' in request.form and 'genre' in request.form and 'sale_price' in request.form:
+        if request.method == 'POST' and 'title' in request.form  and 'author' in request.form and 'genre' in request.form and 'sale_price' in request.form:
             title = request.form['title']
-            stock = request.form['stock']
             author = request.form['author']
             genre = request.form['genre']
             sale_price = request.form['sale_price']
@@ -131,16 +130,10 @@ def add_new_book():
             else:
                 edition = 0
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('SELECT * FROM newbook WHERE title=%s and author = %s and genre =%s and sale_price = %s  ',(title,author,genre,sale_price,))
-            newbook = cursor.fetchone()
-            if newbook:
-                cursor.execute('UPDATE newbook SET stock = %s + %s WHERE title = %s and author = %s and genre = %s and edition = %s and sale_price =%s',(stock,newbook['stock'],title,author,genre,edition,int(sale_price),) )
-                mysql.connection.commit()
-                msg = 'Succesfully added'
-            else:
-                cursor.execute('INSERT INTO newbook(title,author,genre,edition,stock,sale_price) VALUES(%s,%s,%s,%s,%s,%s)',(title,author,genre,edition,stock,sale_price,))
-                mysql.connection.commit()
-                msg = 'Succesfully added'
+            
+            cursor.execute('INSERT INTO newbook(title,author,genre,edition,status,sale_price) VALUES(%s,%s,%s,%s,%s,%s)',(title,author,genre,edition,'AVAILABLE',sale_price,))
+            mysql.connection.commit()
+            msg = 'Succesfully added'
         elif request.method == 'POST':
             msg = 'Please fill out the form!'
         return render_template('add_new_book.html',msg=msg,staff =staff)
@@ -151,9 +144,9 @@ def buy_old_book():
     if 'loggedin' in session:
         staff = session['user']
         msg = ''
-        if request.method == 'POST' and 'title' in request.form and 'stock' in request.form and 'author' in request.form and 'genre' in request.form and 'sale_price' in request.form and 'rental_price' in request.form and 'cost_price' in request.form and 'purchase_cust_id' in request.form:
+        if request.method == 'POST' and 'title' in request.form and 'author' in request.form and 'genre' in request.form and 'sale_price' in request.form and 'rental_price' in request.form and 'cost_price' in request.form and 'purchase_cust_id' in request.form:
             title = request.form['title']
-            stock = request.form['stock']
+            status = 'AVAILABLE'
             author = request.form['author']
             genre = request.form['genre']
             sale_price = request.form['sale_price']
@@ -164,15 +157,263 @@ def buy_old_book():
                 edition = request.form['edition']
             else:
                 edition = 0
-
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('INSERT INTO oldbook(title,author,genre,edition,stock,sale_price,cost_price,rental_price,purchase_cust_id,purchase_staff_id) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(title,author,genre,edition,stock,sale_price,cost_price,rental_price,purchase_cust_id,staff['id']))
-            mysql.connection.commit()
-            msg = 'Succesfully added'
+            cursor.execute('SELECT * from customers WHERE id =%s',(purchase_cust_id,))
+            purchase_customer = cursor.fetchone()
+            if( purchase_customer):
+                cursor.execute('INSERT INTO oldbook(title,author,genre,edition,status,sale_price,cost_price,rental_price,purchase_cust_id,purchase_staff_id) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(title,author,genre,edition,status,sale_price,cost_price,rental_price,purchase_cust_id,staff['id']))
+                mysql.connection.commit()
+                msg = 'Succesfully added'
+            else:
+                mysql.connection.commit()
+                msg = 'Invalid Customer Id'
+
         elif request.method == 'POST':
             msg = 'Please fill out the form!'
         return render_template('buy_old_book.html',msg=msg,staff =staff)
     return redirect(url_for('login_staff'))
+
+@app.route('/process_rentals',methods=['GET','POST'])
+def process_rentals():
+    if 'loggedin' in session:
+        staff = session['user']
+        msg = ''
+        if request.method == 'POST' and 'cust_id' in request.form and 'book_id' in request.form and 'duration' in request.form:
+            cust_id = request.form['cust_id']
+            book_id = request.form['book_id']
+            duration = int(request.form['duration'])
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT * FROM customers WHERE id =%s ',(cust_id,))
+            customer =cursor.fetchone()
+            cursor.execute('SELECT * FROM oldbook WHERE id =%s',(book_id,))
+            oldbook = cursor.fetchone()
+            if(oldbook and customer):
+                if(oldbook['status'] == 'AVAILABLE'):
+                    cursor.execute('INSERT INTO rentals(cust_id,book_id,due_time,total_price,staff_id) VALUES(%s,%s,  DATE_ADD(NOW(),INTERVAL %s DAY),%s,%s)',(cust_id,book_id,7*duration,oldbook['rental_price']*duration,staff['id']))
+                    new_status = 'ON RENT'
+                    cursor.execute('UPDATE oldbook SET status =%s where id = %s',(new_status,book_id,))
+                    mysql.connection.commit()
+                    msg = 'Succesfully added'
+                else:
+                    mysql.connection.commit()
+                    msg = 'Current Book is not available for rent!'   
+            else:
+                mysql.connection.commit()
+                msg = 'Invalid Customer Id ar Book ID !'
+        elif request.method == 'POST':
+            msg = 'Please fill out the form!'
+        return render_template('process_rentals.html',msg=msg,staff =staff)
+    return redirect(url_for('login_staff'))
+
+@app.route('/rental_submission',methods=['GET','POST'])
+def rental_submission():
+    if 'loggedin' in session:
+        staff = session['user']
+        msg = ''
+        if request.method == 'POST' and 'book_id' in request.form :
+            book_id = request.form['book_id']
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT * FROM oldbook WHERE id =%s',(book_id,))
+            oldbook = cursor.fetchone()
+            if(oldbook):
+                if(oldbook['status'] == 'ON RENT' ):
+                    cursor.execute('SELECT * FROM rentals WHERE book_id =%s AND status = %s',(book_id,'ACTIVE'))
+                    rental =cursor.fetchone()
+                    if(rental):
+                        new_status = 'AVAILABLE'
+                        new_status_rental = 'INACTIVE'
+                        cursor.execute('UPDATE rentals SET status =%s , staff_id_submit =%s ,submission_time =CURRENT_TIMESTAMP where id = %s',(new_status_rental,staff['id'],rental['id'],))
+                        cursor.execute('UPDATE oldbook SET status =%s where id = %s',(new_status,book_id,))
+                        mysql.connection.commit()
+                        msg = 'Succesfully submitted'
+                    else:
+                        mysql.connection.commit()
+                        msg = 'No currently active Rental record found with given book id !'
+                else:
+                    mysql.connection.commit()
+                    msg = 'Current Book is not on rent!'   
+            else:
+                mysql.connection.commit()
+                msg = 'Invalid Book ID !'
+        elif request.method == 'POST':
+            msg = 'Please fill out the form!'
+        return render_template('rental_submission.html',msg=msg,staff =staff)
+    return redirect(url_for('login_staff'))
+
+@app.route('/old_book_sales',methods=['GET','POST'])
+def old_book_sales():
+    if 'loggedin' in session:
+        staff = session['user']
+        msg = ''
+        if request.method == 'POST' and 'cust_id' in request.form and 'book_id' in request.form :
+            cust_id = request.form['cust_id']
+            book_id = request.form['book_id']
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT * FROM customers WHERE id =%s ',(cust_id,))
+            customer =cursor.fetchone()
+            cursor.execute('SELECT * FROM oldbook WHERE id =%s',(book_id,))
+            oldbook = cursor.fetchone()
+            if(oldbook and customer):
+                if(oldbook['status'] == 'AVAILABLE'):
+                    cursor.execute('INSERT INTO sales_old(cust_id,book_id,staff_id) VALUES(%s,%s,%s)',(cust_id,book_id,staff['id']))
+                    new_status = 'SOLD'
+                    cursor.execute('UPDATE oldbook SET status =%s where id = %s',(new_status,book_id,))
+                    mysql.connection.commit()
+                    msg = 'Transaction Succesfull!'
+                else:
+                    mysql.connection.commit()
+                    msg = 'Current Book is not already sold !'   
+            else:
+                mysql.connection.commit()
+                msg = 'Invalid Customer Id ar Book ID !'
+        elif request.method == 'POST':
+            msg = 'Please fill out the form!'
+        return render_template('old_book_sales.html',msg=msg,staff =staff)
+    return redirect(url_for('login_staff'))
+
+@app.route('/new_book_sales',methods=['GET','POST'])
+def new_book_sales():
+    if 'loggedin' in session:
+        staff = session['user']
+        msg = ''
+        if request.method == 'POST' and 'cust_id' in request.form and 'book_id' in request.form :
+            cust_id = request.form['cust_id']
+            book_id = request.form['book_id']
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT * FROM customers WHERE id =%s ',(cust_id,))
+            customer =cursor.fetchone()
+            cursor.execute('SELECT * FROM newbook WHERE id =%s',(book_id,))
+            newbook = cursor.fetchone()
+            if(newbook and customer):
+                if(newbook['status'] == 'AVAILABLE'):
+                    cursor.execute('INSERT INTO sales_new(cust_id,book_id,staff_id) VALUES(%s,%s,%s)',(cust_id,book_id,staff['id']))
+                    new_status = 'SOLD'
+                    cursor.execute('UPDATE newbook SET status =%s where id = %s',(new_status,book_id,))
+                    mysql.connection.commit()
+                    msg = 'Transaction Succesfull!'
+                else:
+                    mysql.connection.commit()
+                    msg = 'Current Book is not already sold !'   
+            else:
+                mysql.connection.commit()
+                msg = 'Invalid Customer Id ar Book ID !'
+        elif request.method == 'POST':
+            msg = 'Please fill out the form!'
+        return render_template('new_book_sales.html',msg=msg,staff =staff)
+    return redirect(url_for('login_staff'))
+
+@app.route("/staff_profile")
+def staff_profile():
+    if 'loggedin' in session: 
+        staff = session['user']
+        return render_template("staff_profile.html",staff = staff)
+    return redirect(url_for('login_staff')) 
+
+@app.route("/customer_profile")
+def customer_profile():
+    if 'loggedin' in session: 
+        customer = session['user']
+        return render_template("customer_profile.html",customer = customer)
+    return redirect(url_for('login_customer')) 
+
+@app.route('/browse_old_books/',methods=['GET','POST'])
+def browse_old_books():
+    if 'loggedin' in session:
+        customer = session['user']
+        msg = ''
+        if request.method == 'POST':
+            title =  '%' + request.form['title'] + '%'
+            author = '%' + request.form['author'] +'%'
+            if(request.form['genre'] != 'All'):
+                genre = request.form['genre']
+            else:
+                genre ='%%' 
+            if(request.form['status'] != 'All'):
+                status = request.form['status']
+            else:
+                status ='%%'
+            if(request.form['edition']):
+                edition = request.form['edition']
+            else:
+                edition ='%%'
+
+            if(request.form['book_id']):
+                book_id = request.form['book_id']
+            else:
+                book_id ='%%'
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT * from oldbook WHERE id LIKE %s AND title LIKE %s AND author LIKE %s AND genre LIKE %s AND edition LIKE %s AND status LIKE %s ',(book_id,title ,author,genre,edition,status,))
+            oldbooks = cursor.fetchall()
+            # print(oldbooks)
+            if(oldbooks):
+                mysql.connection.commit()
+                msg = 'Found ' + str(len(oldbooks)) +' book(s)'
+            else:
+                mysql.connection.commit()
+                msg =  'No Such Book Found'
+            return render_template("browse_old_books.html",customer=customer,msg=msg,oldbooks =oldbooks)
+        return render_template("browse_old_books.html",customer=customer,msg=msg,oldbooks ='')
+
+    return redirect(url_for('login_customer'))
+
+@app.route('/browse_new_books/',methods=['GET','POST'])
+def browse_new_books():
+    if 'loggedin' in session:
+        customer = session['user']
+        msg = ''
+        if request.method == 'POST':
+            title =  '%' + request.form['title'] + '%'
+            author = '%' + request.form['author'] +'%'
+            if(request.form['genre'] != 'All'):
+                genre = request.form['genre']
+            else:
+                genre ='%%' 
+            if(request.form['status'] != 'All'):
+                status = request.form['status']
+            else:
+                status ='%%'
+            if(request.form['edition']):
+                edition = request.form['edition']
+            else:
+                edition ='%%'
+
+            if(request.form['book_id']):
+                book_id = request.form['book_id']
+            else:
+                book_id ='%%'
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT * from newbook WHERE id LIKE %s AND title LIKE %s AND author LIKE %s AND genre LIKE %s AND edition LIKE %s AND status LIKE %s ',(book_id,title ,author,genre,edition,status,))
+            newbooks = cursor.fetchall()
+            # print(oldbooks)
+            if(newbooks):
+                mysql.connection.commit()
+                msg = 'Found ' + str(len(newbooks)) +' book(s)'
+            else:
+                mysql.connection.commit()
+                msg =  'No Such Book Found'
+            return render_template("browse_new_books.html",customer=customer,msg=msg,newbooks =newbooks)
+        return render_template("browse_new_books.html",customer=customer,msg=msg,newbooks ='')
+
+    return redirect(url_for('login_customer'))
+
+@app.route('/customer_rentals/',methods=['GET','POST'])
+def customer_rentals():
+    if 'loggedin' in session:
+        customer = session['user']
+        msg = ''
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT r.id as id ,r.book_id as book_id, o.title as title, o.author as author,o.genre as genre, o.edition as edition , r.total_price as total_price , r.issue_time as issue_time ,r.due_time as due_time ,r.submission_time as submission_time, r.status AS rental_status FROM oldbook AS o INNER JOIN rentals AS r ON r.book_id =o.id   WHERE r.cust_id =%s ORDER BY r.issue_time DESC',(customer['id'],) )
+        customer_rentals = cursor.fetchall()
+                        
+        if(customer_rentals):
+            mysql.connection.commit()
+            msg = 'Found ' + str(len(customer_rentals)) +' rental(s)'
+        else:
+            mysql.connection.commit()
+            msg =  'You do not have any Rentals yet!'
+        return render_template("customer_rentals.html",customer=customer,msg=msg,customer_rentals = customer_rentals)
+        
+    return redirect(url_for('login_customer'))
 
 @app.route("/index_staff")
 def index_staff():

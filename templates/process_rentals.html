@@ -1,0 +1,50 @@
+<html lang="en">
+    <head>
+        <title>BharatReads - Staff Dashboard</title>
+        <link rel="stylesheet" href="../static/style2.css">
+        
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+    </head>
+  
+    <body bgcolor="#ffffff">
+        <div class="one">
+            <div class="two">
+                <h1><a href="{{url_for('index_staff')}}">{{staff['name']}}</a></h1>
+                <ul>
+                    
+                    <li><a href="{{url_for('add_new_book')}}"> Add New Book</a></li>
+                    <li><a href="{{url_for('buy_old_book')}}">Buy Old Book</a></li>
+                    <li class = active><a href="{{url_for('process_rentals')}}">Process Rentals</a></li>
+                    <li><a href="{{url_for('rental_submission')}}">Rental Submission</a></li>
+                    <li><a href="{{ url_for('old_book_sales') }}">Process sales transaction of Old Book</a></li>
+                    <li><a href="{{ url_for('new_book_sales') }}">Process sales transaction of New Book</a></li>
+                    <li><a href="{{url_for('register_staff')}}">Register Staff</a></li>
+                    <li><a href="{{url_for('staff_profile')}}">My Profile</a></li>
+                    <li><a href="{{url_for('logout')}}">Log out</a></li>
+                </ul> 
+            </div>
+            <div class="content" align="center">
+                <div class="topbar">
+                    <h2> BharatReads - Staff Dashboard</h2>                        
+                </div></br></br>
+                <div class="contentbar">
+                    <h1>Fill out the details to process rental of an old book</h1></br>
+                    <form action="{{ url_for('process_rentals') }}" method="post" autocomplete="off">
+                        <input type="number" name="cust_id" placeholder="Customer ID" id="cust_id" required class ='textbox'></br></br>
+                        <input type="number" name="book_id" placeholder="Old Book ID" id="book_id" required class ='textbox'></br></br>
+                        <select name="duration" placeholder="Duration" id="duration" required class ='textbox'>
+                            <option value="" disabled selected>Duration (No. of Weeks)</option>
+                            <option value=1>1 Week</option>
+                            <option value=2>2 Weeks</option>
+                            <option value=3>3 Weeks</option>
+                            <option value=4>4 Weeks</option>
+                        </select></br></br>
+                        <div class="msg">{{ msg }}</div>
+                        <input type="submit" value="Submit" class="btn">
+                    </form>   
+                </div>  
+                  
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,58 @@
+<html lang="en">
+    <head>
+        <title>BharatReads - Customer Dashboard</title>
+        <link rel="stylesheet" href="../static/style2.css">
+    </head>
+  
+    <body bgcolor="#ffffff">
+        <div class="one">
+            <div class="two">
+                <h1><a href="{{url_for('index_customer')}}">{{customer['name']}}</a></h1>
+                <ul>
+                    
+                    <li><a href="{{url_for('browse_old_books')}}">Browse old books</a></li>
+                    <li><a href="{{url_for('browse_new_books')}}">Browse new books</a></li>
+                    <li><a href="{{url_for('customer_rentals')}}">My Rentals</a></li>
+                    <li><a href="#">My Purchases</a></li>
+                    <li><a href="#">My Sales</a></li>
+                    <li class =active><a href="{{url_for('customer_profile')}}">My Profile</a></li>
+                    <li><a href="{{url_for('logout')}}">Log out</a></li>
+                </ul> 
+            </div>
+            <div class="content" align="center">
+                <div class="topbar">
+                    <h2> BharatReads - Customer Dashboard</h2>                        
+                </div></br></br>
+                <div class="contentbar">
+                    <h1>Your details</h1>    </br>
+                     
+                        <div class="border">
+                            <table class="worddark"></br></br></br></br>
+                                <tr>
+                                    <td>Customer Id: </td>
+                                    <td>{{ customer['id'] }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Name: </td>
+                                    <td>{{ customer['name'] }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Username: </td>
+                                    <td>{{ customer['username'] }}</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>Contact No.: </td>
+                                    <td>{{ customer['contact_no'] }}</td>
+                                </tr>
+                                
+                                                         
+                            </table>
+                        </div>
+                                                             
+                </div>  
+                  
+            </div>
+        </div>
+    </body>
+</html>

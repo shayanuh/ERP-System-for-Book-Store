@@ -27,7 +27,7 @@
     author varchar(100) NOT NULL,
     edition int,
     genre varchar(100),
-    stock int NOT NULL,
+    status varchar(100) NOT NULL,
     sale_price int NOT NULL,
     PRIMARY KEY (id)
     );
@@ -38,7 +38,7 @@
     author varchar(100) NOT NULL,
     edition int,
     genre varchar(100),
-    stock int NOT NULL,
+    status varchar(100) NOT NULL,
     sale_price int NOT NULL,
     cost_price int NOT NULL,
     rental_price int NOT NULL,
@@ -79,12 +79,16 @@
     book_id int NOT NULL,
     issue_time timestamp DEFAULT CURRENT_TIMESTAMP,
     due_time timestamp NOT NULL,
+    submission_time timestamp ,
     total_price int NOT NULL,
     staff_id int NOT NULL,
+    staff_id_submit int ,
+    status varchar(100) ,
     PRIMARY KEY(id),
     FOREIGN KEY (cust_id) REFERENCES customers(id),
     FOREIGN KEY (book_id) REFERENCES oldbook(id),
-    FOREIGN KEY (staff_id) REFERENCES staff(id)
+    FOREIGN KEY (staff_id) REFERENCES staff(id),
+    FOREIGN KEY (staff_id_submit) REFERENCES staff(id)
     );
     INSERT INTO staff(name,username,password,designation,contact_no) VALUES('Shayan Ul Haq','shayan','123456','CEO', 8290709732); 
     

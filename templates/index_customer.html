@@ -7,14 +7,15 @@
     <body bgcolor="#ffffff">
         <div class="one">
             <div class="two">
-                <h1><a href="{{url_for('index_customer',customer = customer)}}">{{customer['name']}}</a></h1>
+                <h1><a href="{{url_for('index_customer')}}">{{customer['name']}}</a></h1>
                 <ul>
                     
-                    <li><a href="#">Browse old books</a></li>
-                    <li><a href="#">Browse new books</a></li>
-                    <li><a href="#">My Rentals</a></li>
+                    <li><a href="{{url_for('browse_old_books')}}">Browse old books</a></li>
+                    <li><a href="{{url_for('browse_new_books')}}">Browse new books</a></li>
+                    <li><a href="{{url_for('customer_rentals')}}">My Rentals</a></li>
                     <li><a href="#">My Purchases</a></li>
-                    <li><a href="#">My Profile</a></li>
+                    <li><a href="#">My Sales</a></li>
+                    <li><a href="{{url_for('customer_profile')}}">My Profile</a></li>
                     <li><a href="{{url_for('logout')}}">Log out</a></li>
                 </ul> 
             </div>

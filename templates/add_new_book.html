@@ -14,11 +14,12 @@
                     
                     <li class = active><a href="{{url_for('add_new_book')}}"> Add New Book</a></li>
                     <li><a href="{{url_for('buy_old_book')}}">Buy Old Book</a></li>
-                    <li><a href="#">Process Rentals</a></li>
-                    <li><a href="#">Process sales transaction of Old Book</a></li>
-                    <li><a href="#">Process sales transaction of New Book</a></li>
+                    <li><a href="{{url_for('process_rentals')}}">Process Rentals</a></li>
+                    <li><a href="{{url_for('rental_submission')}}">Rental Submission</a></li>
+                    <li><a href="{{ url_for('old_book_sales') }}">Process sales transaction of Old Book</a></li>
+                    <li><a href="{{ url_for('new_book_sales') }}">Process sales transaction of New Book</a></li>
                     <li><a href="{{url_for('register_staff')}}">Register Staff</a></li>
-                    <li><a href="#">My Profile</a></li>
+                    <li><a href="{{url_for('staff_profile')}}">My Profile</a></li>
                     <li><a href="{{url_for('logout')}}">Log out</a></li>
                 </ul> 
             </div>
@@ -33,7 +34,7 @@
                         <input type="text" name="author" placeholder="Author" id="author" required class ='textbox'></br></br>
                         
                         <select name="genre" placeholder="Genre" id="genre" required class ='textbox'>
-                            <option value="" disabled selected>Genre</option>
+                            <option value="" disabled selected hidden>Genre</option>
                             <option value="Fiction">Fiction</option>
                             <option value="Non Fiction">Non Fiction</option>
                             <option value="Educational">Educational</option>
@@ -50,7 +51,6 @@
                         </br></br>
                         <input type="number" name="edition" placeholder="Edition" id="edition" class ='textbox' ></br></br>
                         <input type="number" name="sale_price" placeholder="Price (INR)" id="sale_price" required class ='textbox'></br></br>
-                        <input type="number" name="stock" placeholder="Quantity" id="Stock" required class ='textbox'></br></br>
                         <div class="msg">{{ msg }}</div>
                         <input type="submit" value="Add to stock" class="btn">
                     </form>   

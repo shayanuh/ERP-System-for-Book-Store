@@ -1,0 +1,69 @@
+<html lang="en">
+    <head>
+        <title>BharatReads - Customer Dashboard</title>
+        <link rel="stylesheet" href="../static/style2.css">
+        </head>
+  
+    <body bgcolor="#ffffff">
+        <div class="one">
+            <div class="two">
+                <h1><a href="{{url_for('index_customer')}}">{{customer['name']}}</a></h1>
+                <ul>
+                    
+                    <li><a href="{{url_for('browse_old_books')}}">Browse old books</a></li>
+                    <li><a href="{{url_for('browse_new_books')}}">Browse new books</a></li>
+                    <li class =active><a href="{{url_for('customer_rentals')}}">My Rentals</a></li>
+                    <li><a href="#">My Purchases</a></li>
+                    <li><a href="#">My Sales</a></li>
+                    <li><a href="{{url_for('customer_profile')}}">My Profile</a></li>
+                    <li><a href="{{url_for('logout')}}">Log out</a></li>
+                </ul> 
+            </div>
+            <div class="content" align="center">
+                <div class="topbar">
+                    <h2> BharatReads - Customer Dashboard</h2>                        
+                </div></br></br>
+                <div class="contentbar">
+                    <h1>Your Rentals</h1>    </br>
+                <div class="msg">{{ msg }}</div> </br></br>
+                {% if customer_rentals  %}
+                <div>
+                    <table class ='simple-table'>
+                        <tr>
+                          <th>Rental Id</th>
+                          <th>Old Book Id</th>
+                          <th>Title</th>
+                          <th>Author</th>
+                          <th>Genre</th>
+                          <th>Edition</th>
+                          <th>Total price</th>
+                          <th>Issue time</th>
+                          <th>Due time</th>
+                          <th>Submission time</th>
+                          <th>Rental status</th>
+                        </tr>
+                        {%for customer_rental in customer_rentals%}
+                        <tr>
+                          <td>{{customer_rental['id']}}</td>
+                          <td>{{customer_rental['book_id']}}</td>
+                          <td>{{customer_rental['title']}}</td>
+                          <td>{{customer_rental['author']}}</td>
+                          <td>{{customer_rental['genre']}}</td>
+                          <td>{{customer_rental['edition']}}</td>
+                          <td>{{customer_rental['total_price']}}</td>
+                          <td>{{customer_rental['issue_time']}}</td>
+                          <td>{{customer_rental['due_time']}}</td>
+                          <td>{{customer_rental['submission_time']}}</td>
+                          <td>{{customer_rental['rental_status']}}</td>
+                        </tr>
+                        {% endfor %}
+                      </table>
+                </div>
+                {% endif %}
+                </div>  
+                  
+            </div>
+        </div>
+       
+    </body>
+</html>

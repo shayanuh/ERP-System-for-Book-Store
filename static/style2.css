@@ -30,7 +30,7 @@
 	color: #ffffff;
 }
 
-.textbox{
+.textbox {
 	padding: 10px 40px;
 	background-color: #3274d6;
 	border-radius: 10px;
@@ -42,7 +42,12 @@
 	font-style: oblique;
 	font-weight: bold;
 }
-
+select {
+	color: #FFFFFF;
+	opacity: 1;
+	font-style: oblique;
+	font-weight: bold;
+}
 .btn {
 	padding: 10px 40px;
 	background-color: #3274d6;
@@ -101,7 +106,7 @@
 }
 		
 .one .two .active{
-	background: #3274d6;
+	background: #4494d6;
 }
 
 .one .two ul li{
@@ -145,4 +150,24 @@
 	text-align: center;
 	font-style: oblique;
 	font-weight: bold;
+}
+.simple-table {
+    border: solid 1px #DDEEEE;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font: normal 13px Arial, sans-serif;
+}
+.simple-table thead th {
+    background-color: #DDEFEF;
+    border: solid 1px #DDEEEE;
+    color: #336B6B;
+    padding: 10px;
+    text-align: left;
+    text-shadow: 1px 1px 1px #fff;
+}
+.simple-table tbody td {
+    border: solid 1px #DDEEEE;
+    color: #333;
+    padding: 10px;
+    text-shadow: 1px 1px 1px #fff;
 }

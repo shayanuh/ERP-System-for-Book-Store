@@ -12,11 +12,12 @@
                     
                     <li><a href="{{url_for('add_new_book')}}"> Add New Book</a></li>
                     <li><a href="{{url_for('buy_old_book')}}">Buy Old Book</a></li>
-                    <li><a href="#">Process Rentals</a></li>
-                    <li><a href="#">Process sales transaction of Old Book</a></li>
-                    <li><a href="#">Process sales transaction of New Book</a></li>
+                    <li><a href="{{url_for('process_rentals')}}">Process Rentals</a></li>
+                    <li><a href="{{url_for('rental_submission')}}">Rental Submission</a></li>
+                    <li><a href="{{ url_for('old_book_sales') }}">Process sales transaction of Old Book</a></li>
+                    <li><a href="{{ url_for('new_book_sales') }}">Process sales transaction of New Book</a></li>
                     <li><a href="{{url_for('register_staff')}}">Register Staff</a></li>
-                    <li><a href="#">My Profile</a></li>
+                    <li><a href="{{url_for('staff_profile')}}">My Profile</a></li>
                     <li><a href="{{url_for('logout')}}">Log out</a></li>
                 </ul> 
             </div>

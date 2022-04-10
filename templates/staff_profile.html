@@ -1,0 +1,66 @@
+<html lang="en">
+    <head>
+        <title>BharatReads - Staff Dashboard</title>
+        <link rel="stylesheet" href="../static/style2.css">
+        
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+    </head>
+  
+    <body bgcolor="#ffffff">
+        <div class="one">
+            <div class="two">
+                <h1><a href="{{url_for('index_staff')}}">{{staff['name']}}</a></h1>
+                <ul>
+                    
+                    <li><a href="{{url_for('add_new_book')}}"> Add New Book</a></li>
+                    <li><a href="{{url_for('buy_old_book')}}">Buy Old Book</a></li>
+                    <li><a href="{{url_for('process_rentals')}}">Process Rentals</a></li>
+                    <li><a href="{{ url_for('old_book_sales') }}">Process sales transaction of Old Book</a></li>
+                    <li><a href="{{ url_for('new_book_sales') }}">Process sales transaction of New Book</a></li>
+                    <li><a href="{{url_for('register_staff')}}">Register Staff</a></li>
+                    <li class = active><a href="{{url_for('staff_profile')}}">My Profile</a></li>
+                    <li><a href="{{url_for('logout')}}">Log out</a></li>
+                </ul> 
+            </div>
+            <div class="content" align="center">
+                <div class="topbar">
+                    <h2> BharatReads - Staff Dashboard</h2>                        
+                </div></br></br>
+                <div class="contentbar">
+                    <h1>Your details</h1>    </br>
+                     
+                        <div class="border">
+                            <table class="worddark"></br></br></br></br>
+                                <tr>
+                                    <td>Staff Id: </td>
+                                    <td>{{ staff['id'] }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Name: </td>
+                                    <td>{{ staff['name'] }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Username: </td>
+                                    <td>{{ staff['username'] }}</td>
+                                </tr>
+                                
+                            
+                                <tr>
+                                    <td>Designation: </td>
+                                    <td>{{ staff['designation'] }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Contact No.: </td>
+                                    <td>{{ staff['contact_no'] }}</td>
+                                </tr>
+                                
+                                                         
+                            </table>
+                        </div>
+                                                             
+                </div>
+                  
+            </div>
+        </div>
+    </body>
+</html>
