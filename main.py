@@ -189,7 +189,7 @@ def process_rentals():
             oldbook = cursor.fetchone()
             if(oldbook and customer):
                 if(oldbook['status'] == 'AVAILABLE'):
-                    cursor.execute('INSERT INTO rentals(cust_id,book_id,due_time,total_price,staff_id) VALUES(%s,%s,  DATE_ADD(NOW(),INTERVAL %s DAY),%s,%s)',(cust_id,book_id,7*duration,oldbook['rental_price']*duration,staff['id']))
+                    cursor.execute('INSERT INTO rentals(cust_id,book_id,due_time,total_price,staff_id,status) VALUES(%s,%s,  DATE_ADD(NOW(),INTERVAL %s DAY),%s,%s,%s)',(cust_id,book_id,7*duration,oldbook['rental_price']*duration,staff['id'],'ACTIVE'))
                     new_status = 'ON RENT'
                     cursor.execute('UPDATE oldbook SET status =%s where id = %s',(new_status,book_id,))
                     mysql.connection.commit()
@@ -402,16 +402,69 @@ def customer_rentals():
         customer = session['user']
         msg = ''
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT r.id as id ,r.book_id as book_id, o.title as title, o.author as author,o.genre as genre, o.edition as edition , r.total_price as total_price , r.issue_time as issue_time ,r.due_time as due_time ,r.submission_time as submission_time, r.status AS rental_status FROM oldbook AS o INNER JOIN rentals AS r ON r.book_id =o.id   WHERE r.cust_id =%s ORDER BY r.issue_time DESC',(customer['id'],) )
+        cursor.execute('SELECT r.id as id ,r.book_id as book_id, o.title as title, o.author as author,o.genre as genre, o.edition as edition , r.total_price as total_price , r.issue_time as issue_time ,r.due_time as due_time ,r.submission_time as submission_time, r.status AS rental_status,st.name as staff_name,st2.name as staff_name_submit  FROM oldbook AS o INNER JOIN ((rentals AS r LEFT JOIN staff as st2 ON st2.id  = r.staff_id_submit)INNER JOIN staff as st ON st.id = r.staff_id) ON r.book_id =o.id   WHERE r.cust_id =%s ORDER BY r.issue_time DESC',(customer['id'],) )
         customer_rentals = cursor.fetchall()
                         
         if(customer_rentals):
             mysql.connection.commit()
-            msg = 'Found ' + str(len(customer_rentals)) +' rental(s)'
         else:
             mysql.connection.commit()
             msg =  'You do not have any Rentals yet!'
         return render_template("customer_rentals.html",customer=customer,msg=msg,customer_rentals = customer_rentals)
+        
+    return redirect(url_for('login_customer'))
+
+@app.route('/customer_new_book_purchases/',methods=['GET','POST'])
+def customer_new_book_purchases():
+    if 'loggedin' in session:
+        customer = session['user']
+        msg = ''
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT s.id as transaction_id ,s.book_id as book_id, n.title as title, n.author as author,n.genre as genre, n.edition as edition , n.sale_price as sale_price , s.time as time  , st.name AS staff_name FROM newbook AS n INNER JOIN (sales_new AS s INNER JOIN staff as st ON s.staff_id = st.id)ON s.book_id =n.id   WHERE s.cust_id =%s ORDER BY s.time DESC',(customer['id'],) )
+        books = cursor.fetchall()
+                        
+        if(books):
+            mysql.connection.commit()
+        else:
+            mysql.connection.commit()
+            msg =  'You have not purchased any New Book yet!'
+        return render_template("customer_new_book_purchases.html",customer=customer,msg=msg,books=books)
+        
+    return redirect(url_for('login_customer'))
+
+@app.route('/customer_old_book_purchases/',methods=['GET','POST'])
+def customer_old_book_purchases():
+    if 'loggedin' in session:
+        customer = session['user']
+        msg = ''
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT s.id as transaction_id ,s.book_id as book_id, o.title as title, o.author as author,o.genre as genre, o.edition as edition , o.sale_price as sale_price , s.time as time  , st.name AS staff_name FROM oldbook AS o INNER JOIN (sales_old AS s INNER JOIN staff as st ON s.staff_id = st.id)ON s.book_id =o.id   WHERE s.cust_id =%s ORDER BY s.time DESC',(customer['id'],) )
+        books = cursor.fetchall()
+                        
+        if(books):
+            mysql.connection.commit()
+        else:
+            mysql.connection.commit()
+            msg =  'You have not purchased any Old Book yet!'
+        return render_template("customer_old_book_purchases.html",customer=customer,msg=msg,books=books)
+        
+    return redirect(url_for('login_customer'))
+
+@app.route('/customer_sales/',methods=['GET','POST'])
+def customer_sales():
+    if 'loggedin' in session:
+        customer = session['user']
+        msg = ''
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT o.id as book_id , o.title as title, o.author as author,o.genre as genre, o.edition as edition , o.sale_price as sale_price ,o.cost_price as cost_price,o.rental_price as rental_price,st.name as staff_name FROM oldbook AS o INNER JOIN staff as st ON st.id =o.purchase_staff_id WHERE purchase_cust_id =%s ORDER BY o.id DESC',(customer['id'],) )
+        books = cursor.fetchall()
+                        
+        if(books):
+            mysql.connection.commit()
+        else:
+            mysql.connection.commit()
+            msg =  'You have not sold any Old Book yet!'
+        return render_template("customer_sales.html",customer=customer,msg=msg,books=books)
         
     return redirect(url_for('login_customer'))
 

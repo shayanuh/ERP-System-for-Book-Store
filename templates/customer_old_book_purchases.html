@@ -12,9 +12,9 @@
                     
                     <li><a href="{{url_for('browse_old_books')}}">Browse old books</a></li>
                     <li><a href="{{url_for('browse_new_books')}}">Browse new books</a></li>
-                    <li class =active><a href="{{url_for('customer_rentals')}}">My Rentals</a></li>
+                    <li><a href="{{url_for('customer_rentals')}}">My Rentals</a></li>
                     <li><a href="{{url_for('customer_new_book_purchases')}}">My New Book Purchases</a></li>
-                    <li><a href="{{url_for('customer_old_book_purchases')}}">My Old Book Purchases</a></li>
+                    <li class =active><a href="{{url_for('customer_old_book_purchases')}}">My Old Book Purchases</a></li>
                     <li><a href="{{url_for('customer_sales')}}">My Sales</a></li>
                     <li><a href="{{url_for('customer_profile')}}">My Profile</a></li>
                     <li><a href="{{url_for('logout')}}">Log out</a></li>
@@ -25,41 +25,33 @@
                     <h2> BharatReads - Customer Dashboard</h2>                        
                 </div></br></br>
                 <div class="contentbar">
-                    <h1>Your Rentals</h1>    </br>
+                    <h1>Your Old Book Purchases</h1>    </br>
                 <div class="msg">{{ msg }}</div> </br></br>
-                {% if customer_rentals  %}
+                {% if books  %}
                 <div>
                     <table class ='simple-table'>
                         <tr>
-                          <th>Rental Id</th>
+                          <th>Old Book Sales Transaction Id</th>
                           <th>Old Book Id</th>
                           <th>Title</th>
                           <th>Author</th>
                           <th>Genre</th>
                           <th>Edition</th>
-                          <th>Total price</th>
-                          <th>Issue time</th>
-                          <th>Due time</th>
-                          <th>Submission time</th>
-                          <th>Rental status</th>
-                          <th>Issuing staff</th>
-                          <th>Submission staff</th>
+                          <th>Sales Price</th>
+                          <th>Time</th>
+                          <th>Staff Name</th>
                         </tr>
-                        {%for customer_rental in customer_rentals%}
+                        {%for book in books%}
                         <tr>
-                          <td>{{customer_rental['id']}}</td>
-                          <td>{{customer_rental['book_id']}}</td>
-                          <td>{{customer_rental['title']}}</td>
-                          <td>{{customer_rental['author']}}</td>
-                          <td>{{customer_rental['genre']}}</td>
-                          <td>{{customer_rental['edition']}}</td>
-                          <td>{{customer_rental['total_price']}}</td>
-                          <td>{{customer_rental['issue_time']}}</td>
-                          <td>{{customer_rental['due_time']}}</td>
-                          <td>{{customer_rental['submission_time']}}</td>
-                          <td>{{customer_rental['rental_status']}}</td>
-                          <td>{{customer_rental['staff_name']}}</td>
-                          <td>{{customer_rental['staff_name_submit']}}</td>
+                          <td>{{book['transaction_id']}}</td>
+                          <td>{{book['book_id']}}</td>
+                          <td>{{book['title']}}</td>
+                          <td>{{book['author']}}</td>
+                          <td>{{book['genre']}}</td>
+                          <td>{{book['edition']}}</td>
+                          <td>{{book['sale_price']}}</td>
+                          <td>{{book['time']}}</td>
+                          <td>{{book['staff_name']}}</td>
                         </tr>
                         {% endfor %}
                       </table>

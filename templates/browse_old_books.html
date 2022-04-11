@@ -13,8 +13,9 @@
                     <li class =active><a href="{{url_for('browse_old_books')}}">Browse old books</a></li>
                     <li><a href="{{url_for('browse_new_books')}}">Browse new books</a></li>
                     <li><a href="{{url_for('customer_rentals')}}">My Rentals</a></li>
-                    <li><a href="#">My Purchases</a></li>
-                    <li><a href="#">My Sales</a></li>
+                    <li><a href="{{url_for('customer_new_book_purchases')}}">My New Book Purchases</a></li>
+                    <li><a href="{{url_for('customer_old_book_purchases')}}">My Old Book Purchases</a></li>
+                    <li><a href="{{url_for('customer_sales')}}">My Sales</a></li>
                     <li><a href="{{url_for('customer_profile')}}">My Profile</a></li>
                     <li><a href="{{url_for('logout')}}">Log out</a></li>
                 </ul> 
