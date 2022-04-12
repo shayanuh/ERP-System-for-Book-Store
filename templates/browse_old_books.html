@@ -69,6 +69,7 @@
                           <th>Genre</th>
                           <th>Edition</th>
                           <th>Status</th>
+                          <th>Rental Price (INR / week)</th>
                           <th>Sale Price</th>
                         </tr>
                         {%for oldbook in oldbooks%}
@@ -79,6 +80,7 @@
                           <td>{{oldbook['genre']}}</td>
                           <td>{{oldbook['edition']}}</td>
                           <td>{{oldbook['status']}}</td>
+                          <td>{{oldbook['rental_price']}}</td>
                           <td>{{oldbook['sale_price']}}</td>
                         </tr>
                         {% endfor %}

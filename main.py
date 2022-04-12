@@ -132,8 +132,10 @@ def add_new_book():
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             
             cursor.execute('INSERT INTO newbook(title,author,genre,edition,status,sale_price) VALUES(%s,%s,%s,%s,%s,%s)',(title,author,genre,edition,'AVAILABLE',sale_price,))
+            cursor.execute('SELECT MAX(ID) as mx FROM newbook')
+            id = cursor.fetchone()
             mysql.connection.commit()
-            msg = 'Succesfully added'
+            msg = 'Succesfully added with New Book id = ' + str(id['mx'])
         elif request.method == 'POST':
             msg = 'Please fill out the form!'
         return render_template('add_new_book.html',msg=msg,staff =staff)
@@ -162,8 +164,10 @@ def buy_old_book():
             purchase_customer = cursor.fetchone()
             if( purchase_customer):
                 cursor.execute('INSERT INTO oldbook(title,author,genre,edition,status,sale_price,cost_price,rental_price,purchase_cust_id,purchase_staff_id) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(title,author,genre,edition,status,sale_price,cost_price,rental_price,purchase_cust_id,staff['id']))
+                cursor.execute('SELECT MAX(ID) as mx FROM oldbook')
+                id = cursor.fetchone()
                 mysql.connection.commit()
-                msg = 'Succesfully added'
+                msg = 'Succesfully added with Old Book id = ' + str(id['mx'])
             else:
                 mysql.connection.commit()
                 msg = 'Invalid Customer Id'
