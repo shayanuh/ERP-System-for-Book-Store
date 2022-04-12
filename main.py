@@ -196,14 +196,18 @@ def process_rentals():
                     cursor.execute('INSERT INTO rentals(cust_id,book_id,due_time,total_price,staff_id,status) VALUES(%s,%s,  DATE_ADD(NOW(),INTERVAL %s DAY),%s,%s,%s)',(cust_id,book_id,7*duration,oldbook['rental_price']*duration,staff['id'],'ACTIVE'))
                     new_status = 'ON RENT'
                     cursor.execute('UPDATE oldbook SET status =%s where id = %s',(new_status,book_id,))
+                    cursor.execute('SELECT MAX(id) as mx from rentals')
+                    id = cursor.fetchone()
+                    cursor.execute('SELECT total_price from rentals where id = %s',(id['mx'],))
+                    price = cursor.fetchone()
                     mysql.connection.commit()
-                    msg = 'Succesfully added'
+                    msg = 'Succesfully issued . The total Price to be paid is : INR ' + str(price['total_price'])
                 else:
                     mysql.connection.commit()
                     msg = 'Current Book is not available for rent!'   
             else:
                 mysql.connection.commit()
-                msg = 'Invalid Customer Id ar Book ID !'
+                msg = 'Invalid Customer Id or Book ID !'
         elif request.method == 'POST':
             msg = 'Please fill out the form!'
         return render_template('process_rentals.html',msg=msg,staff =staff)
